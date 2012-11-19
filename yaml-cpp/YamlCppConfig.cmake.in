@@ -1,0 +1,19 @@
+# - Config file for the yaml-cpp package
+# It defines the following variables
+#  YAML_CPP_INCLUDE_DIRS - include directories for FooBar
+#  YAML_CPP_LIBRARIES    - libraries to link against
+ 
+# Compute paths
+get_filename_component(YAML_CPP_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+if(EXISTS "${YAML_CPP_CMAKE_DIR}/CMakeCache.txt")
+   # In build tree
+   include("${YAML_CPP_CMAKE_DIR}/YamlCppBuildTreeSettings.cmake")
+else()
+   set(YAML_CPP_INCLUDE_DIRS "${YAML_CPP_CMAKE_DIR}/@CONF_REL_INCLUDE_DIR@")
+endif()
+ 
+# Our library dependencies (contains definitions for IMPORTED targets)
+include("${YAML_CPP_CMAKE_DIR}/YamlCppDepends.cmake")
+ 
+# These are IMPORTED targets created by YamlCppDepends.cmake
+set(YAML_CPP_LIBRARIES yaml-cpp)
