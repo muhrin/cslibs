@@ -5,7 +5,7 @@
  
 # Compute paths
 get_filename_component(YAML_CPP_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-if(EXISTS "${YAML_CPP_CMAKE_DIR}/CMakeCache.txt")
+if(EXISTS "${YAML_CPP_CMAKE_DIR}/CMakeFiles")
    # In build tree
    include("${YAML_CPP_CMAKE_DIR}/YamlCppBuildTreeSettings.cmake")
 else()

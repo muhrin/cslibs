@@ -5,7 +5,7 @@
  
 # Compute paths
 get_filename_component(SPGLIB_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-if(EXISTS "${SPGLIB_CMAKE_DIR}/CMakeCache.txt")
+if(EXISTS "${SPGLIB_CMAKE_DIR}/CMakeFiles")
    # In build tree
    include("${SPGLIB_CMAKE_DIR}/SpglibBuildTreeSettings.cmake")
 else()
