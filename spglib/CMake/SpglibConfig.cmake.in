@@ -1,6 +1,6 @@
 # - Config file for the spglib package
 # It defines the following variables
-#  SPGLIB_INCLUDE_DIRS - include directories for FooBar
+#  SPGLIB_INCLUDE_DIRS - include directories for Spglib
 #  SPGLIB_LIBRARIES    - libraries to link against
  
 # Compute paths

@@ -318,15 +318,15 @@ export(TARGETS yaml-cpp FILE "${PROJECT_BINARY_DIR}/YamlCppDepends.cmake")
 export(PACKAGE YamlCpp)
  
 # Create a YamlCppBuildTreeSettings.cmake file for use from the build tree
-configure_file(YamlCppBuildTreeSettings.cmake.in
+configure_file(CMake/YamlCppBuildTreeSettings.cmake.in
   "${PROJECT_BINARY_DIR}/YamlCppBuildTreeSettings.cmake" @ONLY)
  
 # Create the YamlCppConfig.cmake and YamlCppConfigVersion.cmake files
 file(RELATIVE_PATH CONF_REL_INCLUDE_DIR "${CMAKE_INSTALL_DIR}"
    "${INCLUDE_INSTALL_ROOT_DIR}")
-configure_file(YamlCppConfig.cmake.in
+configure_file(Cmake/YamlCppConfig.cmake.in
   "${PROJECT_BINARY_DIR}/YamlCppConfig.cmake" @ONLY)
-configure_file(YamlCppConfigVersion.cmake.in
+configure_file(Cmake/YamlCppConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/YamlCppConfigVersion.cmake" @ONLY)
  
 # Install the YamlCppConfig.cmake and YamlCppConfigVersion.cmake

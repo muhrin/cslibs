@@ -114,15 +114,16 @@ export(TARGETS spglib FILE "${PROJECT_BINARY_DIR}/SpglibDepends.cmake")
 export(PACKAGE Spglib)
  
 # Create a SpglibBuildTreeSettings.cmake file for use from the build tree
-configure_file(SpglibBuildTreeSettings.cmake.in
+configure_file(CMake/SpglibBuildTreeSettings.cmake.in
   "${PROJECT_BINARY_DIR}/SpglibBuildTreeSettings.cmake" @ONLY)
  
 # Create the SpglibConfig.cmake and SpglibConfigVersion.cmake files
 file(RELATIVE_PATH CONF_REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
    "${INSTALL_INCLUDE_DIR}")
-configure_file(SpglibConfig.cmake.in
+   
+configure_file(CMake/SpglibConfig.cmake.in
   "${PROJECT_BINARY_DIR}/SpglibConfig.cmake" @ONLY)
-configure_file(SpglibConfigVersion.cmake.in
+configure_file(CMake/SpglibConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/SpglibConfigVersion.cmake" @ONLY)
  
 # Install the SpglibConfig.cmake and SpglibConfigVersion.cmake
@@ -133,3 +134,4 @@ install(FILES
  
 # Install the export set for use with the install-tree
 install(EXPORT SpglibDepends DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+
