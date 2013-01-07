@@ -215,17 +215,11 @@ else()
 endif()
 
 set(INCLUDE_INSTALL_ROOT_DIR include)
+
 set(INCLUDE_INSTALL_DIR ${INCLUDE_INSTALL_ROOT_DIR}/yaml-cpp)
 set(LIB_INSTALL_DIR "${_library_dir}${LIB_SUFFIX}")
 set(ARCHIVE_INSTALL_DIR "lib${LIB_SUFFIX}")
 set(BIN_INSTALL_DIR bin)
-
-if(WIN32 AND NOT CYGWIN)
-  set(DEF_INSTALL_CMAKE_DIR CMake)
-else()
-  set(DEF_INSTALL_CMAKE_DIR lib/CMake/FooBar)
-endif()
-set(CMAKE_INSTALL_DIR ${DEF_INSTALL_CMAKE_DIR})
 
 # Make relative paths absolute (needed later on)
 foreach(p LIB INCLUDE ARCHIVE CMAKE)

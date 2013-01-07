@@ -15,7 +15,7 @@
 
 namespace YAML
 {
-	inline Node::Node(): m_pNode(0)
+	inline Node::Node(): m_pNode(NULL)
 	{
 	}
 	
@@ -123,7 +123,7 @@ namespace YAML
             return node.Scalar();
         }
     };
-    
+
     // access functions
 	template<typename T>
 	inline const T Node::as() const
@@ -168,6 +168,11 @@ namespace YAML
 		return *this;
 	}
 	
+    inline void Node::clear()
+    {
+        m_pNode = NULL;
+    }
+
 	template<typename T>
 	inline void Node::Assign(const T& rhs)
 	{
@@ -224,7 +229,7 @@ namespace YAML
 		m_pMemory->merge(*rhs.m_pMemory);
 		m_pNode = rhs.m_pNode;
 	}
-
+    
 	// size/iterator
 	inline std::size_t Node::size() const
 	{
@@ -267,12 +272,57 @@ namespace YAML
 		m_pMemory->merge(*rhs.m_pMemory);
 	}
 
+    // helpers for indexing
+    namespace detail {
+        template<typename T>
+        struct to_value_t {
+            explicit to_value_t(const T& t_): t(t_) {}
+            const T& t;
+            typedef const T& return_type;
+            
+            const T& operator()() const { return t; }
+        };
+        
+        template<>
+        struct to_value_t<const char*> {
+            explicit to_value_t(const char *t_): t(t_) {}
+            const char *t;
+            typedef std::string return_type;
+            
+            const std::string operator()() const { return t; }
+        };
+        
+        template<>
+        struct to_value_t<char*> {
+            explicit to_value_t(char *t_): t(t_) {}
+            const char *t;
+            typedef std::string return_type;
+            
+            const std::string operator()() const { return t; }
+        };
+        
+        template<std::size_t N>
+        struct to_value_t<char [N]> {
+            explicit to_value_t(const char *t_): t(t_) {}
+            const char *t;
+            typedef std::string return_type;
+            
+            const std::string operator()() const { return t; }
+        };
+
+        // converts C-strings to std::strings so they can be copied
+        template<typename T>
+        inline typename to_value_t<T>::return_type to_value(const T& t) {
+            return to_value_t<T>(t)();
+        }
+    }
+
 	// indexing
 	template<typename Key>
 	inline const Node Node::operator[](const Key& key) const
 	{
 		EnsureNodeExists();
-		detail::node& value = static_cast<const detail::node&>(*m_pNode).get(key, m_pMemory);
+		detail::node& value = static_cast<const detail::node&>(*m_pNode).get(detail::to_value(key), m_pMemory);
 		return Node(value, m_pMemory);
 	}
 	
@@ -280,7 +330,7 @@ namespace YAML
 	inline Node Node::operator[](const Key& key)
 	{
 		EnsureNodeExists();
-		detail::node& value = m_pNode->get(key, m_pMemory);
+		detail::node& value = m_pNode->get(detail::to_value(key), m_pMemory);
 		return Node(value, m_pMemory);
 	}
 	
@@ -288,7 +338,7 @@ namespace YAML
 	inline bool Node::remove(const Key& key)
 	{
 		EnsureNodeExists();
-		return m_pNode->remove(key, m_pMemory);
+		return m_pNode->remove(detail::to_value(key), m_pMemory);
 	}
 	
 	inline const Node Node::operator[](const Node& key) const
@@ -313,39 +363,16 @@ namespace YAML
 		key.EnsureNodeExists();
 		return m_pNode->remove(*key.m_pNode, m_pMemory);
 	}
-	
-	inline const Node Node::operator[](const char *key) const
-	{
-		return operator[](std::string(key));
-	}
-	
-	inline Node Node::operator[](const char *key)
-	{
-		return operator[](std::string(key));
-	}
-	
-	inline bool Node::remove(const char *key)
-	{
-		return remove(std::string(key));
-	}
-	
-	inline const Node Node::operator[](char *key) const
-	{
-		return operator[](static_cast<const char *>(key));
-	}
-	
-	inline Node Node::operator[](char *key)
-	{
-		return operator[](static_cast<const char *>(key));
-	}
-	
-	inline bool Node::remove(char *key)
-	{
-		return remove(static_cast<const char *>(key));
-	}
+    
+    // map
+    template<typename Key, typename Value>
+    inline void Node::force_insert(const Key& key, const Value& value)
+    {
+        EnsureNodeExists();
+		m_pNode->force_insert(detail::to_value(key), detail::to_value(value), m_pMemory);
+    }
 
 	// free functions
-
 	inline bool operator==(const Node& lhs, const Node& rhs)
 	{
 		return lhs.is(rhs);

@@ -56,7 +56,8 @@ namespace YAML
 		bool is(const Node& rhs) const;
 		template<typename T> Node& operator=(const T& rhs);
 		Node& operator=(const Node& rhs);
-
+        void clear();
+        
 		// size/iterator
 		std::size_t size() const;
 
@@ -78,15 +79,11 @@ namespace YAML
 		const Node operator[](const Node& key) const;
 		Node operator[](const Node& key);
 		bool remove(const Node& key);
-		
-		const Node operator[](const char *key) const;
-		Node operator[](const char *key);
-		bool remove(const char *key);
+        
+        // map
+        template<typename Key, typename Value>
+        void force_insert(const Key& key, const Value& value);
 
-		const Node operator[](char *key) const;
-		Node operator[](char *key);
-		bool remove(char *key);
-		
 	private:
 		explicit Node(detail::node& node, detail::shared_memory_holder pMemory);
 		
@@ -105,6 +102,8 @@ namespace YAML
 	};
 
 	bool operator==(const Node& lhs, const Node& rhs);
+    
+    Node Clone(const Node& node);
 	
 	template<typename T>
 	struct convert;
