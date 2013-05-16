@@ -303,6 +303,13 @@ endif()
 ### Configuration file settings
 ###
 
+if(WIN32 AND NOT CYGWIN)
+  set(DEF_INSTALL_CMAKE_DIR CMake)
+else()
+  set(DEF_INSTALL_CMAKE_DIR lib/CMake/yaml-cpp)
+endif()
+set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH
+  "Installation directory for CMake files")
 
 # Add all targets to the build-tree export set
 export(TARGETS yaml-cpp FILE "${PROJECT_BINARY_DIR}/YamlCppDepends.cmake")
@@ -327,7 +334,7 @@ configure_file(CMake/YamlCppConfigVersion.cmake.in
 install(FILES
   "${PROJECT_BINARY_DIR}/YamlCppConfig.cmake"
   "${PROJECT_BINARY_DIR}/YamlCppConfigVersion.cmake"
-  DESTINATION "${CMAKE_INSTALL_DIR}" COMPONENT dev)
+  DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
  
 # Install the export set for use with the install-tree
-install(EXPORT YamlCppDepends DESTINATION "${CMAKE_INSTALL_DIR}" COMPONENT dev)
+install(EXPORT YamlCppDepends DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)

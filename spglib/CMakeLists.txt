@@ -18,7 +18,7 @@ set(INSTALL_ARCHIVE_DIR lib CACHE PATH  "Installation directory for header files
 if(WIN32 AND NOT CYGWIN)
   set(DEF_INSTALL_CMAKE_DIR CMake)
 else()
-  set(DEF_INSTALL_CMAKE_DIR lib/CMake/FooBar)
+  set(DEF_INSTALL_CMAKE_DIR lib/CMake/spglib)
 endif()
 set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Installation directory for CMake files")
 
