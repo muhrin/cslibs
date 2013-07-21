@@ -326,13 +326,13 @@ configure_file(CMake/YamlCppBuildTreeSettings.cmake.in
 file(RELATIVE_PATH CONF_REL_INCLUDE_DIR "${CMAKE_INSTALL_DIR}"
    "${INCLUDE_INSTALL_ROOT_DIR}")
 configure_file(CMake/YamlCppConfig.cmake.in
-  "${PROJECT_BINARY_DIR}/YamlCppConfig.cmake" @ONLY)
+  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/YamlCppConfig.cmake" @ONLY)
 configure_file(CMake/YamlCppConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/YamlCppConfigVersion.cmake" @ONLY)
  
 # Install the YamlCppConfig.cmake and YamlCppConfigVersion.cmake
 install(FILES
-  "${PROJECT_BINARY_DIR}/YamlCppConfig.cmake"
+  "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/YamlCppConfig.cmake"
   "${PROJECT_BINARY_DIR}/YamlCppConfigVersion.cmake"
   DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
  
