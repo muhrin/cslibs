@@ -222,7 +222,7 @@ set(ARCHIVE_INSTALL_DIR "lib${LIB_SUFFIX}")
 set(BIN_INSTALL_DIR bin)
 
 # Make relative paths absolute (needed later on)
-foreach(p LIB INCLUDE ARCHIVE CMAKE)
+foreach(p LIB INCLUDE ARCHIVE)
   set(var ${p}_INSTALL_DIR)
   if(NOT IS_ABSOLUTE "${${var}}")
     set(${var} "${CMAKE_INSTALL_PREFIX}/${${var}}")
@@ -275,7 +275,7 @@ if(MSVC)
 endif()
 
 install(TARGETS yaml-cpp
-	EXPORT YamlCppDepends
+	EXPORT YamlCppTargets
 	${_INSTALL_DESTINATIONS}
 )
 install(
@@ -306,27 +306,37 @@ endif()
 if(WIN32 AND NOT CYGWIN)
   set(DEF_INSTALL_CMAKE_DIR CMake)
 else()
-  set(DEF_INSTALL_CMAKE_DIR lib/CMake/yaml-cpp)
+  set(DEF_INSTALL_CMAKE_DIR share/YamlCpp/cmake)
 endif()
 set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH
   "Installation directory for CMake files")
+# Make CMake install directory absolute, needed for later on
+if(NOT IS_ABSOLUTE "${INSTALL_CMAKE_DIR}")
+  set(INSTALL_CMAKE_DIR "${CMAKE_INSTALL_PREFIX}/${INSTALL_CMAKE_DIR}")
+endif()
 
 # Add all targets to the build-tree export set
-export(TARGETS yaml-cpp FILE "${PROJECT_BINARY_DIR}/YamlCppDepends.cmake")
+export(TARGETS yaml-cpp FILE "${PROJECT_BINARY_DIR}/YamlCppTargets.cmake")
  
 # Export the package for use from the build-tree
 # (this registers the build-tree with a global CMake-registry)
 export(PACKAGE YamlCpp)
  
-# Create a YamlCppBuildTreeSettings.cmake file for use from the build tree
-configure_file(CMake/YamlCppBuildTreeSettings.cmake.in
-  "${PROJECT_BINARY_DIR}/YamlCppBuildTreeSettings.cmake" @ONLY)
- 
 # Create the YamlCppConfig.cmake and YamlCppConfigVersion.cmake files
-file(RELATIVE_PATH CONF_REL_INCLUDE_DIR "${CMAKE_INSTALL_DIR}"
+file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
    "${INCLUDE_INSTALL_ROOT_DIR}")
+
+# ... for the build tree
+set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+configure_file(CMake/YamlCppConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/YamlCppConfig.cmake" @ONLY)
+
+# ... for the install tree
+set(CONF_INCLUDE_DIRS "\${YAML_CPP_CMAKE_DIR}/${REL_INCLUDE_DIR}")
 configure_file(CMake/YamlCppConfig.cmake.in
   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/YamlCppConfig.cmake" @ONLY)
+
+# ... for both
 configure_file(CMake/YamlCppConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/YamlCppConfigVersion.cmake" @ONLY)
  
@@ -337,4 +347,5 @@ install(FILES
   DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
  
 # Install the export set for use with the install-tree
-install(EXPORT YamlCppDepends DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+install(EXPORT YamlCppTargets DESTINATION
+  "${INSTALL_CMAKE_DIR}" COMPONENT dev)
