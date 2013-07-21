@@ -18,7 +18,7 @@ set(INSTALL_ARCHIVE_DIR lib CACHE PATH  "Installation directory for header files
 if(WIN32 AND NOT CYGWIN)
   set(DEF_INSTALL_CMAKE_DIR CMake)
 else()
-  set(DEF_INSTALL_CMAKE_DIR lib/CMake/spglib)
+  set(DEF_INSTALL_CMAKE_DIR share/spglib/cmake)
 endif()
 set(INSTALL_CMAKE_DIR ${DEF_INSTALL_CMAKE_DIR} CACHE PATH "Installation directory for CMake files")
 
@@ -96,7 +96,7 @@ set_target_properties(spglib PROPERTIES COMPILE_FLAGS "-w")
 set_target_properties(spglib PROPERTIES PUBLIC_HEADER "${spglib_Header_Files__}")
 
 install(TARGETS spglib
-  EXPORT SpglibDepends
+  EXPORT SpglibTargets
   LIBRARY DESTINATION "${INSTALL_LIB_DIR}" COMPONENT shlib
   PUBLIC_HEADER DESTINATION "${INSTALL_INCLUDE_DIR}/spglib" COMPONENT dev
   ARCHIVE DESTINATION "${INSTALL_ARCHIVE_DIR}" COMPONENT stlib
@@ -107,25 +107,30 @@ install(TARGETS spglib
 ### Configuration file settings
 ###
 # Add all targets to the build-tree export set
-export(TARGETS spglib FILE "${PROJECT_BINARY_DIR}/SpglibDepends.cmake")
+export(TARGETS spglib FILE "${PROJECT_BINARY_DIR}/SpglibTargets.cmake")
  
 # Export the package for use from the build-tree
 # (this registers the build-tree with a global CMake-registry)
 export(PACKAGE Spglib)
  
-# Create a SpglibBuildTreeSettings.cmake file for use from the build tree
-configure_file(CMake/SpglibBuildTreeSettings.cmake.in
-  "${PROJECT_BINARY_DIR}/SpglibBuildTreeSettings.cmake" @ONLY)
- 
 # Create the SpglibConfig.cmake and SpglibConfigVersion.cmake files
-file(RELATIVE_PATH CONF_REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
+file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
    "${INSTALL_INCLUDE_DIR}")
-   
+
+# ... for the build tree
+set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+configure_file(CMake/SpglibConfig.cmake.in
+  "${PROJECT_BINARY_DIR}/SpglibConfig.cmake" @ONLY)
+
+# ... for the install tree
+set(CONF_INCLUDE_DIRS "\${SPGLIB_CMAKE_DIR}/${REL_INCLUDE_DIR}")
 configure_file(CMake/SpglibConfig.cmake.in
   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/SpglibConfig.cmake" @ONLY)
+
+# ... for both
 configure_file(CMake/SpglibConfigVersion.cmake.in
   "${PROJECT_BINARY_DIR}/SpglibConfigVersion.cmake" @ONLY)
- 
+
 # Install the SpglibConfig.cmake and SpglibConfigVersion.cmake
 install(FILES
   "${PROJECT_BINARY_DIR}${CMAKE_FILES_DIRECTORY}/SpglibConfig.cmake"
@@ -133,5 +138,6 @@ install(FILES
   DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
  
 # Install the export set for use with the install-tree
-install(EXPORT SpglibDepends DESTINATION "${INSTALL_CMAKE_DIR}" COMPONENT dev)
+install(EXPORT SpglibTargets DESTINATION
+  "${INSTALL_CMAKE_DIR}" COMPONENT dev)
 

@@ -5,12 +5,6 @@
  
 # Compute paths
 get_filename_component(YAML_CPP_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-#if(EXISTS "${YAML_CPP_CMAKE_DIR}/CMakeFiles")
-#   # In build tree
-#   include("${YAML_CPP_CMAKE_DIR}/YamlCppBuildTreeSettings.cmake")
-#else()
-#   set(YAML_CPP_INCLUDE_DIRS "${YAML_CPP_CMAKE_DIR}/@CONF_REL_INCLUDE_DIR@")
-#endif()
 set(YAML_CPP_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
  
 # Our library dependencies (contains definitions for IMPORTED targets)

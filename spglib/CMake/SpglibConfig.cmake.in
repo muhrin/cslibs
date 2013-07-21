@@ -5,15 +5,10 @@
  
 # Compute paths
 get_filename_component(SPGLIB_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
-if(EXISTS "${SPGLIB_CMAKE_DIR}/CMakeFiles")
-   # In build tree
-   include("${SPGLIB_CMAKE_DIR}/SpglibBuildTreeSettings.cmake")
-else()
-   set(SPGLIB_INCLUDE_DIRS "${SPGLIB_CMAKE_DIR}/@CONF_REL_INCLUDE_DIR@")
-endif()
+set(SPGLIB_INCLUDE_DIRS "@CONF_INCLUDE_DIRS@")
  
 # Our library dependencies (contains definitions for IMPORTED targets)
-include("${SPGLIB_CMAKE_DIR}/SpglibDepends.cmake")
+include("${SPGLIB_CMAKE_DIR}/SpglibTargets.cmake")
  
-# These are IMPORTED targets created by SpglibDepends.cmake
+# These are IMPORTED targets created by SpglibTargets.cmake
 set(SPGLIB_LIBRARIES spglib)
