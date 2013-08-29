@@ -1,3 +1,174 @@
+2013-04-16  Atsushi Togo  <atz.togo@gmail.com>
+
+	* symmetry.c (get_operation):
+
+	In some case, get_space_group_operation returns more than 48
+	symmetry operations for a primitive cell. To avoid this, an
+	iterative approach, which is just reducing tolerance gradually to
+	achieve number of symmetry operations <= 48, is implemented.
+
+	* symmetry.c:
+	In the symmetry operation search, rot[] and trans[] were used. Now
+	they are replaced by Symmetry *symmetry in symmetry.c.
+
+
+2013-04-14  Atsushi Togo  <atz.togo@gmail.com>
+
+	* Fortran interface given by Dimitar Pashov:
+
+	The new fortran interface is given by Dimitar Pashov, which is
+	much safer than the previous one. The new fortran interface, its
+	example, and makefile are found in the example directory as
+	spglib_f08.f90, example_f08.f90 and Makefile_f08.
+
+	* spglib.h, spglib.c, kpoint.h, kpoint,c:
+
+	Symprec parameter was removed from spg_get_stabilized_reciprocal_mesh.
+
+2013-01-28  Atsushi Togo  <atz.togo@gmail.com>
+
+	* spglib.c, spglib_f.c:
+
+	Pointerd out by Michael Rutter that the length of charasters of
+	space-group type symbol (International table) was wrong in
+	spglib_f.c. That of Schoenflies symbol was also found wrong. The
+	former and latter were fixed as from 21 to 11 and from 10 to 7,
+	respectively.
+
+2012-10-10  Atsushi Togo  <atz.togo@gmail.com>
+
+	* Version 1.3
+
+	Rethink algorithms to search symmetry operations for speed-up and
+	stability. Many small modifications are applied. Some parts of the
+	codes that look unnecessary were removed but this change might
+	make the code unstable.
+
+	* symmetry.c (get_translation):
+
+	Improve OpenMP efficiency. Number of atoms to enable OpenMP
+	concurrency is set as 1000 (NUM_ATOMS_CRITERION_FOR_OPENMP).
+
+2012-10-09  Atsushi Togo  <atz.togo@gmail.com>
+
+	* symmetry.c (sym_get_pure_translation, get_translation):
+
+	In 'sym_get_pure_translation', iterative approach to search
+	pure_translation was employed. But 'sym_get_pure_translation' was
+	only used from two functions in primitive.c. In these two
+	functions, tolerance is iteratively reduced when the search
+	fails. Because there is no need to do iteration twice, the
+	iteration part in 'sym_get_pure_translation' was removed.
+
+	* primitive.{c,h}:
+
+	'get_primitive_with_pure_translation' was replaced by
+	'get_primitive_and_pure_translation'. The former was only used
+	from 'get_operation' in symmetry.c and the interative approach was
+	implemented in 'get_operation'. The iterative part was moved into
+	'get_primitive_and_pure_translation'.
+
+	The Primitive structure was defined in primitive.h. This just
+	packs Cell * primitive_cell and VecDBL * pure_trans. The Primitive
+	structure is only used in 'get_operation' in symmetry.c and
+	'(prm_)get_primitive_and_pure_translation' in primitive.c.
+
+
+2012-10-08  Atsushi Togo  <atz.togo@gmail.com>
+
+	* spacegroup.c (get_hall_number_local_iteration):
+
+	REDUCE_RATE to reduce number of symmetry operations is changed
+	from 0.2 to 0.95. Symmetry operations depend on tolerance
+	delicately.
+
+	* Remove many lines of debug_print:
+
+	Now to follow the flow is more important than to see the
+	detailed behavior of implementation.
+
+2012-10-03  Atsushi Togo  <atz.togo@gmail.com>
+
+	* Version 1.2.5
+	* primitive.c:
+
+	Separate out get_primitive_with_mapping_table from
+	prm_get_primitive_with_mapping_table. Rename
+	prm_get_primitive_with_all to
+	get_primitive_with_pure_translation.
+	In get_primitive_with_pure_translation, it was
+	  if (pure_trans->size > 0)
+	but not it was fixed to
+	  if (pure_trans->size > 1)
+	not to search primitive cell when pure_trans->size == 1.
+
+2012-10-01  Atsushi Togo  <atz.togo@gmail.com>
+
+	* Version 1.2.4
+	* kpoint.c (get_ir_reciprocal_mesh):
+
+	In spglib, k-point grid is indexed as, for example,
+
+	0 1 2 3 4 5 6 -5 -4 -3 -2 -1
+
+	for 12 points mesh. Now the different index style such as
+
+	0 1 2 3 4 5 -6 -5 -4 -3 -2 -1
+
+	is activated by CFLAGS='-DGRID_BOUNDARY_AS_NEGATIVE' before
+	running configure script at the compilation time.
+
+	* symmetry.c (get_operation):
+
+	In the iterative reduction of tolerance of primitive cell search,
+	pure_trans was searched by a fixed tolerance rather than the
+	reduced one. This is fixed to use the reduced tolerance at each
+	iteration.
+
+2012-08-13  Atsushi Togo  <atz.togo@gmail.com>
+
+	* Version 1.2.3
+	* symmetry.c (is_identity_metric):
+
+	To check identity of metric tensors, too small angle induces
+	numerical size error, so if the dtheta is calculated smaller than
+	1e-6, automatically set the angles be identical.
+
+	* spacegroup.c (get_hall_number_local_iteration):
+
+	Implementation of iterative reduction of symmetry tolerance to
+	search symmetry operation to get Hall symbol is separated as the
+	function get_hall_number_local_iteration and the tolerance
+	reduction rate of REDUCE_RATE is changed from 0.2 from 0.95.
+
+2012-07-17  Atsushi Togo  <atz.togo@gmail.com>
+
+	* Version 1.2.2
+	* lattice.c (get_centering):
+
+	Tranformation A-centring monoclinic lattice to C-centring
+	monoclinic lattice preserving b-axis is not well handled and now
+	the matrix 'monocli_a2c' is used for it.
+
+2012-07-14  Atsushi Togo  <atz.togo@gmail.com>
+
+	* Version 1.2.1
+	* pointgroup.c (laue_one_axis):
+
+	Transformation matrix is expected to be always positive, but it
+	was not correctly implemented.
+
+2012-05-28  Atsushi Togo  <atz.togo@gmail.com>
+
+	* refinement.c (reduce_symmetry_in_frame):
+
+	Fix memory leak by freeing lattice_trans.
+
+2012-04-26  Atsushi Togo  <atz.togo@gmail.com>
+
+	The numbering of the hall symbol is included in the 'struct
+	SpglibDataset'. This starts from 1 to 530.
+
 2012-04-25  Atsushi Togo  <atz.togo@gmail.com>
 
 	* spglib.c, spglib.h:

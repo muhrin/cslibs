@@ -1,12 +1,15 @@
 
+cmake_minimum_required(VERSION 2.8)
+
 ###
 ### Project settings
 ###
 project(Spglib)
 
 set(SPGLIB_VERSION_MAJOR "1")
-set(SPGLIB_VERSION_MINOR "2")
-set(SPGLIB_VERSION "${SPGLIB_VERSION_MAJOR}.${SPGLIB_VERSION_MINOR}")
+set(SPGLIB_VERSION_MINOR "4")
+set(SPGLIB_VERSION_PATCH "1")
+set(SPGLIB_VERSION "${SPGLIB_VERSION_MAJOR}.${SPGLIB_VERSION_MINOR}.${SPGLIB_VERSION_PATCH}")
 
 ###
 ### Configuration settings

@@ -1,4 +1,4 @@
-/* spglib.h version 1.2 */
+/* spglib.h version 1.4.1 */
 /* Copyright (C) 2008 Atsushi Togo */
 
 #ifndef __spglib_H__
@@ -59,6 +59,7 @@
 
 typedef struct {
   int spacegroup_number;
+  int hall_number;
   char international_symbol[11];
   char hall_symbol[17];
   double transformation_matrix[3][3]; /* bravais_lattice = T * original_lattice */
@@ -302,22 +303,18 @@ int spg_get_stabilized_reciprocal_mesh(int grid_point[][3],
 				       const int mesh[3],
 				       const int is_shift[3],
 				       const int is_time_reversal,
-				       SPGCONST double lattice[3][3],
 				       const int num_rot,
 				       SPGCONST int rotations[][3][3],
 				       const int num_q,
-				       SPGCONST double qpoints[][3],
-				       const double symprec);
+				       SPGCONST double qpoints[][3]);
 
 /* Irreducible triplets of k-points are searched under conservation of */
 /* :math:``\mathbf{k}_1 + \mathbf{k}_2 + \mathbf{k}_3 = \mathbf{G}``. */
 /* Don't forget to free memory space of triplets using spg_free_triplets */
 SpglibTriplets * spg_get_triplets_reciprocal_mesh(const int mesh[3],
 						  const int is_time_reversal,
-						  SPGCONST double lattice[3][3],
 						  const int num_rot,
-						  SPGCONST int rotations[][3][3],
-						  const double symprec);
+						  SPGCONST int rotations[][3][3]);
 
 void spg_free_triplets(SpglibTriplets * triplets);
 
@@ -327,10 +324,8 @@ int spg_get_triplets_reciprocal_mesh_at_q(int weights[],
 					  const int grid_point,
 					  const int mesh[3],
 					  const int is_time_reversal,
-					  SPGCONST double lattice[3][3],
 					  const int num_rot,
-					  SPGCONST int rotations[][3][3],
-					  const double symprec);
+					  SPGCONST int rotations[][3][3]);
 
 int spg_extract_triplets_reciprocal_mesh_at_q(int triplets_at_q[][3],
 					      int weight_triplets_at_q[],
@@ -339,9 +334,7 @@ int spg_extract_triplets_reciprocal_mesh_at_q(int triplets_at_q[][3],
 					      SPGCONST int triplets[][3],
 					      const int mesh[3],
 					      const int is_time_reversal,
-					      SPGCONST double lattice[3][3],
 					      const int num_rot,
-					      SPGCONST int rotations[][3][3],
-					      const double symprec);
+					      SPGCONST int rotations[][3][3]);
 
 #endif
