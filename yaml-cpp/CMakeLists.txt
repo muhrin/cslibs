@@ -327,7 +327,9 @@ file(RELATIVE_PATH REL_INCLUDE_DIR "${INSTALL_CMAKE_DIR}"
    "${INCLUDE_INSTALL_ROOT_DIR}")
 
 # ... for the build tree
-set(CONF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}" "${PROJECT_BINARY_DIR}")
+set(CONF_INCLUDE_DIRS
+  "${PROJECT_SOURCE_DIR}/include" "${PROJECT_BINARY_DIR}/include"
+)
 configure_file(CMake/YamlCppConfig.cmake.in
   "${PROJECT_BINARY_DIR}/YamlCppConfig.cmake" @ONLY)
 
